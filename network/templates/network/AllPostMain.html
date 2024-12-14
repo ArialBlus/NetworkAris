@@ -1,0 +1,30 @@
+<div class="addCart" id="addCart_{{ post.id }}">
+    <div id="post-{{ post.id }}" class="card my-3 mx-5" style="width: 24rem;">
+        <div class="card-body">
+            <h5 class="card-title">
+                <a href="{% url 'profile' user_id=post.user.id %}">@{{ post.user }}</a>
+            </h5>
+            <img src="{{ post.user.profile_image_url }}" alt="Profile Image" class="rounded-circle" width="40" height="40">
+            
+            <p id="post-content-{{ post.id }}" class="card-text">
+                <a href="{% url 'postComment' post.id %}" class="post-link" data-post-id="{{ post.id }}">{{ post.content }}</a>
+            </p>
+
+            {% if post.image %}
+                <img src="{{ post.image.url }}" alt="Post Image" class="img-fluid mt-3" />
+            {% endif %}
+            <p class="card-text"><small class="text-muted">{{ post.date }}</small></p>
+        </div>
+        {% include 'network/modals.html' %}
+
+
+
+        <div class="d-flex justify-content-around">
+            <!-- Botón para abrir el modal global -->
+            <button type="button" class="btn btn-secondary open-modal-btn" data-post-id="{{ post.id }}">
+                Edit Post
+            </button>
+        </div>
+        
+    </div>
+</div>

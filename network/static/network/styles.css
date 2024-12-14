@@ -1,0 +1,151 @@
+/* Contenedor principal de la publicación */
+.newPost {
+    display:flex;
+    text-align: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* Encabezado de publicación */
+.h1P {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+
+/* Nombre de usuario */
+.username {
+    font-weight: bold;
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+/* Estilos personalizados para las tarjetas */
+.card {
+    padding: 16px;
+    /* position: relative; */
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+    margin: 16px auto;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+} 
+
+
+
+
+/* Botón de Like específico */
+.like-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 8px;
+    margin-bottom: 12px; /* Espacio adicional debajo del botón y contador */
+}
+
+/* Botón de like/dislike */
+.like-button {
+    padding: 8px 16px;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    border: none;
+}
+
+/* Estado del botón "Like" */
+.btn-primary.like-button {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.btn-primary.like-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Estado del botón "Dislike" */
+.btn-danger.like-button {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.btn-danger.like-button:hover {
+    background-color: #c82333;
+    transform: scale(1.05);
+}
+
+/* Estilos para el ícono del botón */
+.like-button i {
+    margin-right: 6px;
+    font-size: 16px;
+}
+
+/* Contador de likes */
+.like-count {
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+    background-color: #f1f1f1;
+    border-radius: 12px;
+    padding: 4px 10px;
+    min-width: 30px;
+    text-align: center;
+}
+
+
+
+/* CSS DEL TEXT AREA*/
+
+.textarea-wrapper {
+    position: relative;
+    width: 600px; /* Ancho fijo del área de texto */
+    margin: 0 auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+#postContent {
+    width: 100%;
+    min-height: 100px;
+    max-height: 500px; /* Limite de altura */
+    padding: 12px;
+    outline: none;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    font-size: 16px;
+    line-height: 1.5;
+    box-sizing: border-box;
+    resize: none;
+}
+
+.preview-image {
+    display: block;
+    max-width: 100%;
+    max-height: 200px;
+    margin-top: 10px;
+    border-radius: 8px;
+}
+
+.image-icon {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.textarea-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}

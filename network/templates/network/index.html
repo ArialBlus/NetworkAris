@@ -1,0 +1,159 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+
+<h1 class="h1P">All Posts</h1>
+
+{% if user.is_authenticated %}
+<div class="newComment my-4">
+    <h2>Nuevo post</h2>
+    <form id="commentForm" method="post" enctype="multipart/form-data" onsubmit="handleImageSubmit()" action="{% url 'newPost' %}">
+        {% csrf_token %}
+        <div class="textarea-container">
+            <div class="textarea-wrapper">
+                <!-- Div editable para escribir comentarios -->
+                <div id="postContent" class="form-control comment-area" contenteditable="true" placeholder="Escribe tu comentario..." oninput="adjustDivHeight('postContent')"></div>
+                
+                <!-- Contenedor para mostrar la vista previa de la imagen -->
+                <div id="imagePreviewContainer" class="image-preview"></div>
+
+                <!-- Campo oculto para enviar el contenido del comentario -->
+                <input type="hidden" id="contentInput" name="content">
+
+                <!-- Icono de imagen -->
+                <label for="commentImageInput" class="image-icon">
+                    <i class="bi bi-image"></i>
+                </label>
+                <input type="file" id="commentImageInput" name="image" accept="image/*" class="d-none" onchange="previewImage(event, 'imagePreviewContainer', 'postContent')" />
+            </div>
+        </div>
+        <input type="submit" class="btn btn-primary" value="Post" />
+
+    </form>
+    
+    
+</div>
+
+
+
+<div class="post-container">
+    {% for post in page_obj %}
+        {% include 'network/AllPostMain.html' %}
+    {% endfor %}
+</div>
+
+<!-- Modal Global -->
+<div class="modal" id="globalModal" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Post</h5>
+                <button type="button" class="close close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <textarea id="globalTextarea" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-modal-btn">Close</button>
+                <button type="button" class="btn btn-success save-changes-btn">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .newComment {
+        display: flex; /* Activa flexbox */
+        flex-direction: column; /* Alinea los elementos verticalmente */
+        justify-content: center; /* Centra los elementos verticalmente */
+        align-items: center; /* Centra los elementos horizontalmente */
+        text-align: center; /* Asegura que el texto también esté centrado */
+        padding: 20px; /* Opcional: Añade espacio interno */
+        gap: 15px; /* Espaciado entre elementos */
+}
+    .newComment input[type="submit"] {
+        margin-top: 10px; /* Ajusta este valor según lo necesario */
+    }
+
+
+    /* Modal básico */
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1050;
+        background: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente oscuro */
+        display: none;
+        justify-content: center;
+        align-items: center;
+        text-align: left;
+        
+        
+        vertical-align: top;
+        backdrop-filter: blur(5px); /* Efecto de desenfoque en el fondo */
+    }
+
+    .modal-dialog {
+        width: 90%;
+        max-width: 500px;
+        margin: 0 auto;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal.show {
+        display: flex; /* Muestra el modal como un flexbox para centrarlo */
+    }
+
+    /* Estilo para el contenido del fondo */
+    body.modal-open {
+        overflow: hidden;
+    }
+    
+    /* Animación de cierre */
+    .modal.fade-out {
+        opacity: 1;
+        transition: opacity 0.3s ease-out;
+    }
+
+    .modal.fade-out.hide {
+        opacity: 0;
+        visibility: hidden;
+    }
+    /* Div editable */
+    #postContent {
+        text-align: left; /* Asegura que el texto comience a la izquierda */
+        vertical-align: top; /* Asegura que el contenido esté al principio */
+        overflow-y: auto; /* Permite el scroll vertical si es necesario */
+        height: auto; /* Ajusta dinámicamente el tamaño */
+        min-height: 100px; /* Altura mínima para evitar que sea demasiado pequeño */
+        padding: 10px; /* Espaciado interno */
+        box-sizing: border-box; /* Incluye el padding dentro de la altura */
+    }
+    
+    #globalTextarea {
+    text-align: left; /* Alinea el texto a la izquierda */
+    vertical-align: top; /* Alinea el texto al inicio */
+    padding: 10px; /* Opcional: añade espacio interno */
+    resize: none; /* Evita que el usuario cambie el tamaño del textarea, si lo deseas */
+    overflow-y: auto; /* Asegura que haya un scroll si el texto excede */
+
+
+
+}
+
+  
+
+
+
+
+
+</style>
+
+{% else %}
+    <h1>You must be logged in to see this page.</h1>
+{% endif %}
+{% endblock %}

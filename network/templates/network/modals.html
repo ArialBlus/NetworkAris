@@ -1,0 +1,14 @@
+{% if post.user != user %}
+    <div class="like-container">
+        {% if post.id in postYouLike %}
+            <button id="like-button-{{ post.id }}" data-liked="true" onclick="likeHandler({{ post.id }})" class="btn btn-danger like-button" type="button">
+                <i class="bi bi-hand-thumbs-down"></i> Dislike
+            </button>
+        {% else %}
+            <button id="like-button-{{ post.id }}" data-liked="false" onclick="likeHandler({{ post.id }})" class="btn btn-primary like-button" type="button">
+                <i class="bi bi-hand-thumbs-up"></i> Like
+            </button>
+        {% endif %}
+        <span id="like-count-{{ post.id }}" class="like-count">{{ post.like_count }}</span>
+    </div>
+{% endif %}

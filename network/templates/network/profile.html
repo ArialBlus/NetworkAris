@@ -1,0 +1,272 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+<h1 class="username"> {{ Username }}</h1>
+
+<div class="container">
+    <div class="row d-flex justify-content-center">
+        <h3 class="col-4">Followers: {{ followers.count }}</h3>
+        <h3 class="col-4">Following: {{ following.count }}</h3>
+        
+        {% if user != profile_user %}
+            {% if isFollowing %}
+                <form method="post" action="{% url 'unFollow' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="userFollow" value="{{ profile_user.username }}">
+                    <button type="submit" class="btn btn-danger">UnFollow</button>
+                </form>
+            {% else %}
+                <form method="post" action="{% url 'follow' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="userFollow" value="{{ profile_user.username }}">
+                    <button type="submit" class="btn btn-primary">Follow</button>
+                </form>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+{% if user.is_authenticated %}
+<div class="post-container">
+    {% for post in page_obj %}
+    <div class="card my-3 mx-5 shadow-sm" style="width: 18rem;" id="post-{{ post.id }}">
+        <div class="card-body">
+            <h5 class="card-title">@{{ post.user }}</h5>
+            <p id="post-content-{{ post.id }}" class="card-text">
+                <a href="{% url 'postComment' post.id %}" class="post-link" data-post-id="{{ post.id }}">{{ post.content }}</a>
+            </p>
+            <p class="card-text">{{ post.date }}</p>
+            {% if post.image %}
+                <img src="{{ post.image.url }}" alt="Post image" class="img-fluid mt-2">
+            {% endif %}
+        </div>
+        
+        <div class="card-footer text-muted d-flex justify-content-between">
+            <!-- Botón de edición -->
+            <button type="button" class="btn btn-warning btn-sm open-modal-btn" data-post-id="{{ post.id }}">
+                Edit Post
+            </button>
+            
+            <!-- Botón de eliminación -->
+            {% if post.user == user %}
+            <form method="post" action="{% url 'delete_post' post.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-sm">Delete Post</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Modal Global -->
+<div class="modal" id="globalModal" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Post</h5>
+                <button type="button" class="close close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <textarea id="globalTextarea" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-modal-btn">Close</button>
+                <button type="button" class="btn btn-success save-changes-btn">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    /* Modal Background */
+/* Modal Background */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1050;
+    background: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente oscuro */
+    display: none;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px); /* Efecto de desenfoque en el fondo */
+    text-align: left;
+}
+
+/* Cuando el modal se muestra, se cambia a flex */
+.modal.show {
+    display: flex;
+}
+
+/* Modal Dialog */
+.modal-dialog {
+    width: 90%;
+    max-width: 500px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+}
+
+/* Modal Header */
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+}
+
+/* Modal Title */
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Close Button */
+.close-modal-btn {
+    font-size: 1.5rem;
+    border: none;
+    background: transparent;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.close-modal-btn:hover {
+    color: #333;
+}
+
+/* Modal Body */
+.modal-body {
+    padding: 15px;
+}
+
+/* Textarea */
+#globalTextarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    resize: vertical;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+#globalTextarea:focus {
+    border-color: #5c6bc0;
+    outline: none;
+}
+
+/* Modal Footer */
+.modal-footer {
+    padding: 15px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Button Styling */
+.btn {
+    border-radius: 5px;
+    font-size: 1rem;
+    padding: 8px 15px;
+    transition: background-color 0.3s ease;
+}
+
+/* Secondary Button */
+.btn-secondary {
+    background-color: #f8f9fa;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.btn-secondary:hover {
+    background-color: #e9ecef;
+}
+
+/* Success Button */
+.btn-success {
+    background-color: #28a745;
+    color: #fff;
+    border: 1px solid #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+/* Button Focus */
+.btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
+}
+
+/* Form Styles */
+.newComment {
+    display: flex; /* Activa flexbox */
+    flex-direction: column; /* Alinea los elementos verticalmente */
+    justify-content: center; /* Centra los elementos verticalmente */
+    align-items: center; /* Centra los elementos horizontalmente */
+    text-align: center; /* Asegura que el texto también esté centrado */
+    padding: 20px; /* Opcional: Añade espacio interno */
+    gap: 15px; /* Espaciado entre elementos */
+}
+
+.newComment input[type="submit"] {
+    margin-top: 10px; /* Ajusta este valor según lo necesario */
+}
+
+/* Editable Div */
+#postContent {
+    text-align: left; /* Asegura que el texto comience a la izquierda */
+    vertical-align: top; /* Asegura que el contenido esté al principio */
+    overflow-y: auto; /* Permite el scroll vertical si es necesario */
+    min-height: 100px; /* Altura mínima para evitar que sea demasiado pequeño */
+    padding: 10px; /* Espaciado interno */
+    box-sizing: border-box; /* Incluye el padding dentro de la altura */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+/* Image Icon */
+.image-icon {
+    font-size: 1.5rem;
+    color: #007bff;
+    cursor: pointer;
+}
+
+.image-icon:hover {
+    color: #0056b3;
+}
+
+/* Preview Image */
+.image-preview {
+    margin-top: 10px;
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 5px;
+}
+
+/* Input Fields */
+input[type="file"] {
+    display: none;
+}
+
+
+</style>
+{% else %}
+<h1>You must be logged in to see this page.</h1>
+{% endif %}
+
+{% endblock %}
